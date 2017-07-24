@@ -1,53 +1,48 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Button
 } from 'react-native';
+import { StackNavigator } from 'react-navigation';
 
-export default class stockchecker extends Component {
+class HomeScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Welcome',
+  };
   render() {
+    const { navigate } = this.props.navigation;
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
+      <View>
+        <Text>Hello, Chat App!</Text>
+        <Button onPress={() => navigate('Chat', { user: 'Lucy' })} title="Chat with Lucy" />
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+
+class ChatScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Chat with Lucy',
+  };
+  render() {
+    return (
+      <View>
+        <Text>Chat with Lucy</Text>
+      </View>
+    );
+  }
+}
+
+const SimpleApp = StackNavigator({
+  Home: { screen: HomeScreen },
+  Chat: { screen: ChatScreen },
 });
 
-AppRegistry.registerComponent('stockchecker', () => stockchecker);
+//AppRegistry.registerComponent('SimpleApp', () => SimpleApp);
+AppRegistry.registerComponent('stockchecker', () => SimpleApp);
+
+
