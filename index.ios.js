@@ -7,9 +7,9 @@ import {
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 //import { SideMenu,Menu } from 'react-native-side-menu';
-import { Menu } from 'react-native-side-menu';
+//import { Menu } from 'react-native-side-menu';
 //const SideMenu = require('react-native-side-menu');
-import { Button, SideMenu, List, ListItem, ButtonGroup, SearchBar, CheckBox } from 'react-native-elements';
+import { Button, SideMenu, Menu, List, ListItem, ButtonGroup, SearchBar, CheckBox } from 'react-native-elements';
 
 
 class HomeScreen extends React.Component {
@@ -36,6 +36,7 @@ class HomeScreen extends React.Component {
         <Button onPress={() => navigate('SearchbarGroup', { user: 'test' })} title="SearchbarGroup" />
         <Button onPress={() => navigate('CheckBoxGroup', { user: 'test' })} title="CheckBoxGroup" />
         <Button onPress={() => navigate('SideMenuGroup', { user: 'test' })} title="SideMenuGroup" />
+        <Button onPress={() => navigate('ListGroup', { user: 'test' })} title="ListGroup" />
       </View>
     );
   }
@@ -67,19 +68,44 @@ class ChatScreen extends React.Component {
 
 
 const list = [
-  {
-    name: 'Amy Farha',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-    subtitle: 'Vice President'
-  },
-  {
-    name: 'Chris Jackson',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  }
-]
+      {
+        name: "Amy Farha",
+        avatar_url: "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg",
+        subtitle: "Vice President"
+      },
+      {
+        name: "Chris Jackson",
+        avatar_url: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
+        subtitle: "Vice Chairman"
+      },
+      {
+        name: "Amanda Martin",
+        avatar_url: "https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg",
+        subtitle: "CEO"
+      },
+      {
+        name: "Christy Thomas",
+        avatar_url: "https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg",
+        subtitle: "Lead Developer"
+      },
+      {
+        name: "Melissa Jones",
+        avatar_url: "https://s3.amazonaws.com/uifaces/faces/twitter/nuraika/128.jpg",
+        subtitle: "CTO"
+      },
+      {
+        name: "Melissa Jones",
+        avatar_url: "https://s3.amazonaws.com/uifaces/faces/twitter/nuraika/128.jpg",
+        subtitle: "CTO"
+      },
+      {
+        name: "Melissa Jones",
+        avatar_url: "https://s3.amazonaws.com/uifaces/faces/twitter/nuraika/128.jpg",
+        subtitle: "CTO"
+      }
+];
 
-class ListsScreen extends React.Component {
+class ListScreen extends React.Component {
   static navigationOptions = {
     title: 'ListsScreen',
   };
@@ -97,7 +123,17 @@ class ListsScreen extends React.Component {
     const menu = <Menu navigator={navigator}/>;
     return (
       <View>
-        <Text>ListsScreen</Text>
+        <List>
+          {
+            list.map((item, i) => (
+              <ListItem
+                key={i}
+                title={item.name}
+                icon={{name: item.icon}}
+              />
+            ))
+          }
+        </List>
       </View>
     );
   }
@@ -110,26 +146,52 @@ class SideMenuScreen extends React.Component {
   constructor(props) {
     super(props);
     //this.state = { loading: false };
-    this.state = { toggled: false };
+    //this.state = { toggled: false };
+    this.state = {
+      isOpen: false
+    }
+    this.toggleSideMenu = this.toggleSideMenu.bind(this);
   }
-  toggle() {
-      console.log(this.state);
-      // let state = this.state.loading;
-      console.log("Clicked!")
-      // this.setState({ loading: !state })
-  }
-  toggleSideMenu () {
+  onSideMenuChange (isOpen: boolean) {
     this.setState({
-      toggled: !this.state.toggled
+      isOpen: isOpen
     })
   }
-  render() {
-    const menu = <Menu navigator={navigator}/>;
-    return (
-      <View>
-        <Text>SideMenuScreen</Text>
-      </View>
-    );
+
+  toggleSideMenu () {
+    this.setState({
+      isOpen: !this.state.isOpen
+    })
+  }
+
+
+render () {
+  const MenuComponent = (
+    <View style={{flex: 1, backgroundColor: '#ededed', paddingTop: 50}}>
+      <List containerStyle={{marginBottom: 20}}>
+      {
+        list.map((l, i) => (
+          <ListItem
+            roundAvatar
+            onPress={() => console.log('Pressed')}
+            avatar={l.avatar_url}
+            key={i}
+            title={l.name}
+            subtitle={l.subtitle}
+          />
+        ))
+      }
+      </List>
+    </View>
+  )
+
+  return (
+      <SideMenu
+        isOpen={this.state.isOpen}
+        onChange={this.onSideMenuChange.bind(this)}
+        menu={MenuComponent}>
+      </SideMenu>
+    )
   }
 }
 
@@ -265,7 +327,8 @@ const SimpleApp = StackNavigator({
   ButtonGroup: { screen: ButtonGroupScreen },
   SearchbarGroup : {screen : SearchbarScreen},
   CheckBoxGroup : {screen : CheckboxScreen},
-  SideMenuGroup : {screen : SideMenuScreen}
+  SideMenuGroup : {screen : SideMenuScreen},
+  ListGroup : {screen : ListScreen},
 });
 
 //AppRegistry.registerComponent('SimpleApp', () => SimpleApp);
