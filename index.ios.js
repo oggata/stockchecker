@@ -10,7 +10,7 @@ import { StackNavigator } from 'react-navigation';
 //import { Menu } from 'react-native-side-menu';
 //const SideMenu = require('react-native-side-menu');
 //AAPL,GOOG,GOOGL,YHOO,TSLA,INTC,AMZN,BIDU,ORCL,MSFT,ORCL,ATVI,NVDA,GME,LNKD,NFLX
-
+import { ScrollView } from 'react-native';
 import { Button, SideMenu, Menu, List, ListItem, ButtonGroup, SearchBar, CheckBox } from 'react-native-elements';
 
 class HomeScreen extends React.Component {
@@ -63,7 +63,6 @@ class ChatScreen extends React.Component {
   }
 
   componentWillMount(){
-     //console.log("CALL API1============================================================================================================>");
      api.getPrices().then((res) => {
 
       //改行でsplitしてlineに配列として入れる
@@ -81,16 +80,35 @@ class ChatScreen extends React.Component {
         if(columns[0].startsWith('a')){
           var _unixtime = columns[0].slice(1);
           this.firstUnixTime = _unixtime;
-          var _txt = _unixtime + "," + this.unixToDate(_unixtime) + "," + columns[1] + "," + columns[2] + "," + columns[3];
+          //var _txt = _unixtime + "," + this.unixToDate(_unixtime) + "," + columns[1] + "," + columns[2] + "," + columns[3];
+          //var _txt = "{name:'AAAAA'}";
+          var _txt = new Object();
+          _txt.name = "hello";
+          _txt.strdate = this.unixToDate(_unixtime);
+          _txt.owarine = columns[1];
+          _txt.takane = columns[2];
+          _txt.yasune = columns[3];
+          _txt.hajimene = columns[4];
+          _txt.dekidaka = columns[5];
+
           this.prices.push(_txt);
         }else{
           var _unixtime = Number(this.firstUnixTime) + (86400 * Number(columns[0]));
-          var _txt = _unixtime + "," + this.unixToDate(_unixtime) + "," + columns[1] + "," + columns[2] + "," + columns[3];
+          //var _txt = _unixtime + "," + this.unixToDate(_unixtime) + "," + columns[1] + "," + columns[2] + "," + columns[3];
+          //var _txt = "{name:'AAAAA'}";
+          var _txt = new Object();
+          _txt.name = "hello";
+          _txt.strdate = this.unixToDate(_unixtime);
+          _txt.owarine = columns[1];
+          _txt.takane = columns[2];
+          _txt.yasune = columns[3];
+          _txt.hajimene = columns[4];
+          _txt.dekidaka = columns[5];
+          
           this.prices.push(_txt);
         }
       }
-      console.log(this.prices);
-
+console.log(this.prices[0].name)
 
       this.setState({
         prices : this.prices
@@ -104,6 +122,7 @@ class ChatScreen extends React.Component {
       console.log("Clicked!")
       // this.setState({ loading: !state })
   }
+
   render() {
     const menu = <Menu navigator={navigator}/>;
     return (
@@ -112,23 +131,21 @@ class ChatScreen extends React.Component {
         <Text>Apple Inc</Text>
         <Text>Apple Inc</Text>
         <Text>Apple Inc</Text>
-
-        <List>
-          {
-            this.state.prices.map((item, i) => (
-              <ListItem
-                key={i}
-                title={item.name}
-                subtitle={item.market}
-                icon={{name: item.icon}}
-                onPress={() => navigate('Chat')}
-              />
-            ))
-          }
-        </List>
-
-
-
+        <ScrollView>
+          <List>
+            {
+              this.state.prices.map((item, i) => (
+                <ListItem
+                  key={i}
+                  title={item.strdate}
+                  subtitle={item.market}
+                  icon={{name: item.icon}}
+                  onPress={() => navigate('Chat')}
+                />
+              ))
+            }
+          </List>
+        </ScrollView>
       </View>
     );
   }
@@ -253,6 +270,7 @@ class ListScreen extends React.Component {
     const menu = <Menu navigator={navigator}/>;
     return (
       <View>
+        <ScrollView>
         <List>
           {
             this.state.movies.map((item, i) => (
@@ -266,6 +284,7 @@ class ListScreen extends React.Component {
             ))
           }
         </List>
+        </ScrollView>
       </View>
     );
   }
