@@ -106,6 +106,7 @@ const list = [
       }
 ];
 
+/*
 function getMoviesFromApiAsync() {
   return fetch('https://facebook.github.io/react-native/movies.json')
     .then((response) => response.json())
@@ -117,6 +118,7 @@ function getMoviesFromApiAsync() {
       console.error(error);
     });
 }
+*/
 
 var api = {
   getMoviesFromApiAsync(){
@@ -218,7 +220,6 @@ class ListScreen extends React.Component {
                 icon={{name: item.icon}}
                 //onPress={() => console.log('Pressed')}
                 onPress={() => navigate('Chat')}
-                title="List"
               />
             ))
           }

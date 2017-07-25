@@ -16,6 +16,6 @@
     { "name": "NVIDIA Corporation", "code": "NVDA", "market":"NASDAQ", "url": ""},
     { "name": "Gamestop Corporation", "code": "GME", "market":"NASDAQ", "url": ""},
     { "name": "LinkedIn Corporation", "code": "LNKD", "market":"NASDAQ", "url": ""},
-    { "name": "Netflix, Inc", "code": "NFLX", "market":"NASDAQ", "url": ""},
+    { "name": "Netflix, Inc", "code": "NFLX", "market":"NASDAQ", "url": ""}
   ]
 }
