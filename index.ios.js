@@ -9,8 +9,9 @@ import { StackNavigator } from 'react-navigation';
 //import { SideMenu,Menu } from 'react-native-side-menu';
 //import { Menu } from 'react-native-side-menu';
 //const SideMenu = require('react-native-side-menu');
-import { Button, SideMenu, Menu, List, ListItem, ButtonGroup, SearchBar, CheckBox } from 'react-native-elements';
+//AAPL,GOOG,GOOGL,YHOO,TSLA,INTC,AMZN,BIDU,ORCL,MSFT,ORCL,ATVI,NVDA,GME,LNKD,NFLX
 
+import { Button, SideMenu, Menu, List, ListItem, ButtonGroup, SearchBar, CheckBox } from 'react-native-elements';
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -18,6 +19,7 @@ class HomeScreen extends React.Component {
   };
   constructor(props) {
     super(props);
+    console.log("HomeScreen-------->");
     this.state = { loading: false };
   }
   toggle() {
@@ -66,7 +68,6 @@ class ChatScreen extends React.Component {
   }
 }
 
-
 const list = [
       {
         name: "Amy Farha",
@@ -105,14 +106,82 @@ const list = [
       }
 ];
 
+function getMoviesFromApiAsync() {
+  return fetch('https://facebook.github.io/react-native/movies.json')
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log(responseJson.movies);
+      return responseJson.movies;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+var api = {
+  getMoviesFromApiAsync(){
+    var url = 'https://facebook.github.io/react-native/movies.json';
+    return fetch(url).then((res) => res.json());
+  }
+};
+
+/*
+static navigationOptions = {
+    title: 'List',
+  };
+  render() {
+    const { navigate } = this.props.navigation;
+
+    return (
+     
+      <View>
+        <Text>Location 1 List!</Text>
+        <Button
+          onPress={() => navigate('Home')}
+          title="Home"
+        />
+        <FlatList
+          data={this.list}
+          renderItem={({item}) =>  
+
+          <ListItem item={item}/>
+        }
+
+        />
+          
+      </View>
+      );
+  }
+}
+*/
+
 class ListScreen extends React.Component {
   static navigationOptions = {
     title: 'ListsScreen',
   };
+
   constructor(props) {
     super(props);
-    this.state = { loading: false };
+    this.state = { loading: false, movies: [] };
+    console.log("ListsScreen-------->");
   }
+
+  componentWillMount(){
+     api.getMoviesFromApiAsync().then((res) => {
+      this.setState({
+        movies: res.movies
+       })
+      //console.log("CALL API==================>");
+      //console.log(this.state.movies);
+     });
+  }
+
+  renderMovies() {
+    return this.state.movies.map(movie =>
+      <MovieDetail key={movie.title} record={movie} />
+    );
+  }
+
   toggle() {
       console.log(this.state);
       // let state = this.state.loading;
@@ -120,16 +189,36 @@ class ListScreen extends React.Component {
       // this.setState({ loading: !state })
   }
   render() {
+/*
+      console.log("RENDER==================>");
+      console.log(this.state);
+      console.log("RENDER==================>");
+          <ListItem
+            roundAvatar
+            onPress={() => console.log('Pressed')}
+            avatar={l.avatar_url}
+            key={i}
+            title={l.name}
+            subtitle={l.subtitle}
+          />
+
+*/
+    const { navigate } = this.props.navigation;
+
     const menu = <Menu navigator={navigator}/>;
     return (
       <View>
         <List>
           {
-            list.map((item, i) => (
+            this.state.movies.map((item, i) => (
               <ListItem
                 key={i}
-                title={item.name}
+                title={item.title}
+                subtitle="xxxx"
                 icon={{name: item.icon}}
+                //onPress={() => console.log('Pressed')}
+                onPress={() => navigate('Chat')}
+                title="List"
               />
             ))
           }
@@ -138,6 +227,8 @@ class ListScreen extends React.Component {
     );
   }
 }
+
+
 
 class SideMenuScreen extends React.Component {
   static navigationOptions = {

@@ -1,0 +1,21 @@
+{
+  "title": "test",
+  "description": "test",
+  "companies": [
+    { "name": "Apple Inc", "code": "AAPL", "market":"NASDAQ", "url": ""},
+    { "name": "Alphabet Inc Class A", "code": "GOOG", "market":"NASDAQ", "url": ""},
+    { "name": "Alphabet Inc Class C", "code": "GOOGL", "market":"NASDAQ", "url": ""},
+    { "name": "Altaba Inc", "code": "YHOO", "market":"NASDAQ", "url": ""},
+    { "name": "Tesla Inc", "code": "TSLA", "market":"NASDAQ", "url": ""},
+    { "name": "Intel Corporation", "code": "INTC", "market":"NASDAQ", "url": ""},
+    { "name": "Amazon.com, Inc.", "code": "AMZN", "market":"NASDAQ", "url": ""},
+    { "name": "Baidu Inc", "code": "BIDU", "market":"NASDAQ", "url": ""},
+    { "name": "Oracle", "code": "ORCL", "market":"NASDAQ", "url": ""},
+    { "name": "Microsoft Corporation", "code": "MSFT", "market":"NASDAQ", "url": ""},
+    { "name": "Activision Blizzard, Inc.", "code": "ATVI", "market":"NASDAQ", "url": ""},
+    { "name": "NVIDIA Corporation", "code": "NVDA", "market":"NASDAQ", "url": ""},
+    { "name": "Gamestop Corporation", "code": "GME", "market":"NASDAQ", "url": ""},
+    { "name": "LinkedIn Corporation", "code": "LNKD", "market":"NASDAQ", "url": ""},
+    { "name": "Netflix, Inc", "code": "NFLX", "market":"NASDAQ", "url": ""},
+  ]
+}
