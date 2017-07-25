@@ -12,7 +12,28 @@ import { StackNavigator } from 'react-navigation';
 //AAPL,GOOG,GOOGL,YHOO,TSLA,INTC,AMZN,BIDU,ORCL,MSFT,ORCL,ATVI,NVDA,GME,LNKD,NFLX
 import { ScrollView } from 'react-native';
 import { Button, SideMenu, Menu, List, ListItem, ButtonGroup, SearchBar, CheckBox } from 'react-native-elements';
-import Table from 'react-native-simple-table'
+import Table from 'react-native-simple-table';
+import Chart from 'react-native-chart';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  chart: {
+    width: 300,
+    height: 300,
+  },
+});
+
+const dataAAA = [[
+  [0, 1],
+  [1, 3],
+  [3, 7],
+  [4, 9],
+]];
 
 const columns = [
   {
@@ -68,6 +89,7 @@ class HomeScreen extends React.Component {
       <View>
         <Text>Hello, Chat App!</Text>
         <Button onPress={() => navigate('Chat', { user: 'Lucy' })} title="Chat" />
+        <Button onPress={() => navigate('Chart', { user: 'test' })} title="Chart" />
         <Button onPress={() => navigate('ButtonGroup', { user: 'test' })} title="ButtonGroup" />
         <Button onPress={() => navigate('SearchbarGroup', { user: 'test' })} title="SearchbarGroup" />
         <Button onPress={() => navigate('CheckBoxGroup', { user: 'test' })} title="CheckBoxGroup" />
@@ -167,12 +189,118 @@ class ChatScreen extends React.Component {
         <Text>Apple Inc</Text>
         <Text>Apple Inc</Text>
         <Text>Apple Inc</Text>
+
         <Text>react-native-simple-table</Text>
         <Table height={400} columnWidth={60} columns={columns} dataSource={dataSource} />
       </View>
     );
   }
 }
+
+
+class ChartScreen extends React.Component {
+  static navigationOptions = {
+    title: 'ChartScreen',
+  };
+  constructor(props) {
+    super(props);
+    this.state = { loading: false, prices: []};
+  }
+
+  unixToDate(unixtime){
+    var ux = unixtime;
+    var d = new Date( ux * 1000 );
+    var month = d.getMonth() + 1;
+    var day   = d.getDate();
+    var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
+    return month + "/" + day;
+  }
+
+  componentWillMount(){
+     api.getPrices().then((res) => {
+
+      //改行でsplitしてlineに配列として入れる
+      var lines = res.split(/\r\n|\r|\n/);
+      //８行目以降は価格部になるので、配列に入れておく
+      this.prices = []; 
+      /*
+        a で始まる時刻: aを取った文字列がUNIX時刻
+        a で始まらない時刻:
+        a で始まる時刻 + INTERVAL × この列の数値
+      */
+      this.firstUnixTime = 0;
+      for(i = 7; i < lines.length; i++) {
+        var columns = lines[i].split(',');
+        if(columns[0].startsWith('a')){
+          var _unixtime = columns[0].slice(1);
+          this.firstUnixTime = _unixtime;
+          //var _txt = _unixtime + "," + this.unixToDate(_unixtime) + "," + columns[1] + "," + columns[2] + "," + columns[3];
+          //var _txt = "{name:'AAAAA'}";
+          var _txt = new Object();
+          _txt.name = "hello";
+          _txt.strdate = this.unixToDate(_unixtime);
+          _txt.owarine = columns[1];
+          _txt.takane = columns[2];
+          _txt.yasune = columns[3];
+          _txt.hajimene = columns[4];
+          _txt.dekidaka = columns[5];
+
+          this.prices.push(_txt);
+        }else{
+          var _unixtime = Number(this.firstUnixTime) + (86400 * Number(columns[0]));
+          //var _txt = _unixtime + "," + this.unixToDate(_unixtime) + "," + columns[1] + "," + columns[2] + "," + columns[3];
+          //var _txt = "{name:'AAAAA'}";
+          var _txt = new Object();
+          _txt.name = "hello";
+          _txt.strdate = this.unixToDate(_unixtime);
+          _txt.owarine = columns[1];
+          _txt.takane = columns[2];
+          _txt.yasune = columns[3];
+          _txt.hajimene = columns[4];
+          _txt.dekidaka = columns[5];
+          
+          this.prices.push(_txt);
+        }
+      }
+      //console.log(this.prices[0].name)
+      this.setState({
+        prices : this.prices
+      })
+     });
+  }
+
+  toggle() {
+      console.log(this.state);
+      // let state = this.state.loading;
+      console.log("Clicked!")
+      // this.setState({ loading: !state })
+  }
+
+  render() {
+    const menu = <Menu navigator={navigator}/>;
+    //let dataSource = DataFactory.generate().data;
+    let dataSource = this.state.prices;
+
+    return (
+      <View style={styles.container}>
+        <Text>Apple Inc</Text>
+        <Text>Apple Inc</Text>
+        <Text>Apple Inc</Text>
+        <Text>Apple Inc</Text>
+
+        <Chart
+          style={styles.chart}
+          data={dataAAA}
+          verticalGridStep={5}
+          type="line"
+          showDataPoint={true}
+          color={['#e1cd00']} />
+
+      </View>
+    );
+  }
+}
+
 
 const list = [
       {
@@ -498,6 +626,7 @@ class CheckboxScreen extends React.Component {
 const SimpleApp = StackNavigator({
   Home: { screen: HomeScreen },
   Chat: { screen: ChatScreen },
+  Chart: { screen: ChartScreen },
   ButtonGroup: { screen: ButtonGroupScreen },
   SearchbarGroup : {screen : SearchbarScreen},
   CheckBoxGroup : {screen : CheckboxScreen},
