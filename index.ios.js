@@ -14,6 +14,7 @@ import { ScrollView } from 'react-native';
 import { Button, SideMenu, Menu, List, ListItem, ButtonGroup, SearchBar, CheckBox } from 'react-native-elements';
 import Table from 'react-native-simple-table';
 import Chart from 'react-native-chart';
+import RNChart from 'react-native-chart';
 
 const styles = StyleSheet.create({
   container: {
@@ -22,18 +23,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
-  chart: {
-    width: 300,
-    height: 300,
-  },
 });
-
-const dataAAA = [[
-  [0, 1],
-  [1, 3],
-  [3, 7],
-  [4, 9],
-]];
 
 const columns = [
   {
@@ -67,6 +57,17 @@ const columns = [
     width: 100
   },
 ];
+ 
+const data = [
+    ['7/1', 1000],
+    ['7/2', 1000],
+    ['7/3', 1000],
+    ['7/4', 1000],
+    ['7/4', 1000],
+    ['7/4', 1000],
+    ['7/4', 1000],
+    ['7/4', 1000],
+];
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -99,6 +100,21 @@ class HomeScreen extends React.Component {
     );
   }
 }
+
+
+
+/*
+      <View>
+        <Text>Hello, Chat App!</Text>
+        <Button onPress={() => navigate('Chat', { user: 'Lucy' })} title="Chat" />
+        <Button onPress={() => navigate('Chart', { user: 'test' })} title="Chart" />
+        <Button onPress={() => navigate('ButtonGroup', { user: 'test' })} title="ButtonGroup" />
+        <Button onPress={() => navigate('SearchbarGroup', { user: 'test' })} title="SearchbarGroup" />
+        <Button onPress={() => navigate('CheckBoxGroup', { user: 'test' })} title="CheckBoxGroup" />
+        <Button onPress={() => navigate('SideMenuGroup', { user: 'test' })} title="SideMenuGroup" />
+        <Button onPress={() => navigate('ListGroup', { user: 'test' })} title="ListGroup" />
+      </View>
+*/
 
 class ChatScreen extends React.Component {
   static navigationOptions = {
@@ -204,7 +220,7 @@ class ChartScreen extends React.Component {
   };
   constructor(props) {
     super(props);
-    this.state = { loading: false, prices: []};
+    this.state = { loading: false, prices: [], points:data};
   }
 
   unixToDate(unixtime){
@@ -222,7 +238,8 @@ class ChartScreen extends React.Component {
       //改行でsplitしてlineに配列として入れる
       var lines = res.split(/\r\n|\r|\n/);
       //８行目以降は価格部になるので、配列に入れておく
-      this.prices = []; 
+      this.prices = [];
+      this.points = [];
       /*
         a で始まる時刻: aを取った文字列がUNIX時刻
         a で始まらない時刻:
@@ -230,6 +247,8 @@ class ChartScreen extends React.Component {
       */
       this.firstUnixTime = 0;
       for(i = 7; i < lines.length; i++) {
+
+
         var columns = lines[i].split(',');
         if(columns[0].startsWith('a')){
           var _unixtime = columns[0].slice(1);
@@ -245,7 +264,16 @@ class ChartScreen extends React.Component {
           _txt.hajimene = columns[4];
           _txt.dekidaka = columns[5];
 
+
+
           this.prices.push(_txt);
+          var _pointData = [];
+          _pointData.push(_txt.strdate);
+          _pointData.push(Number(columns[1]));
+
+if(columns[1]){
+          this.points.push(_pointData);
+}
         }else{
           var _unixtime = Number(this.firstUnixTime) + (86400 * Number(columns[0]));
           //var _txt = _unixtime + "," + this.unixToDate(_unixtime) + "," + columns[1] + "," + columns[2] + "," + columns[3];
@@ -260,11 +288,32 @@ class ChartScreen extends React.Component {
           _txt.dekidaka = columns[5];
           
           this.prices.push(_txt);
+
+          var _pointData = [];
+          _pointData.push(_txt.strdate);
+          _pointData.push(Number(columns[1]));
+          if(columns[1]){
+            this.points.push(_pointData);
+          }
+
+/*
+if(columns[1]){
+//if(Number(columns[1]) >= 170){
+  console.log(">>>>>>>>>>>>>>>>>>>>>");
+  console.log(columns[1]);
+//}
+}
+
+*/
+//console.log(">>>>>>>>>>>>>>>>>>>>>");
+//console.log(columns[1]);
+
         }
       }
       //console.log(this.prices[0].name)
       this.setState({
-        prices : this.prices
+        prices : this.prices,
+        points : this.points
       })
      });
   }
@@ -278,25 +327,25 @@ class ChartScreen extends React.Component {
 
   render() {
     const menu = <Menu navigator={navigator}/>;
-    //let dataSource = DataFactory.generate().data;
     let dataSource = this.state.prices;
-
     return (
-      <View style={styles.container}>
-        <Text>Apple Inc</Text>
-        <Text>Apple Inc</Text>
-        <Text>Apple Inc</Text>
-        <Text>Apple Inc</Text>
-
-        <Chart
-          style={styles.chart}
-          data={dataAAA}
-          verticalGridStep={5}
-          type="line"
-          showDataPoint={true}
-          color={['#e1cd00']} />
-
-      </View>
+        <View style={{width: 300,height: 300,flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', }}>
+            <Chart
+                style={{width: 300,height: 300,marginBottom: 20}}
+                data={this.state.points}
+                verticalGridStep={10}
+                type="line"
+                showDataPoint={true}
+                showAxis={true}
+                lineWidth={5}
+                gridColor={'#DDD'}
+                yAxisWidth={35}
+                fillColor={'rgba(87,190,133, 0.5)'}
+                color={'rgba(87,190,133, 1)'}
+                yAxisWidth={100}
+                xAxisHeight={100}
+             />
+        </View>
     );
   }
 }
