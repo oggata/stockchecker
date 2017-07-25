@@ -59,14 +59,7 @@ const columns = [
 ];
  
 const data = [
-    ['7/1', 1000],
-    ['7/2', 1000],
-    ['7/3', 1000],
-    ['7/4', 1000],
-    ['7/4', 1000],
-    ['7/4', 1000],
-    ['7/4', 1000],
-    ['7/4', 1000],
+    ['7/1', 1000]
 ];
 
 class HomeScreen extends React.Component {
@@ -296,7 +289,7 @@ if(columns[1]){
             this.points.push(_pointData);
           }
 
-/*
+
 if(columns[1]){
 //if(Number(columns[1]) >= 170){
   console.log(">>>>>>>>>>>>>>>>>>>>>");
@@ -304,7 +297,7 @@ if(columns[1]){
 //}
 }
 
-*/
+
 //console.log(">>>>>>>>>>>>>>>>>>>>>");
 //console.log(columns[1]);
 
@@ -325,13 +318,28 @@ if(columns[1]){
       // this.setState({ loading: !state })
   }
 
+  renderLoadingView() {
+    return (
+      <View>
+        <Text>
+          Loading temperatures...
+        </Text>
+      </View>
+    );
+  }
+
   render() {
     const menu = <Menu navigator={navigator}/>;
+    const buttons = ['Hello', 'World', 'Buttons']
     let dataSource = this.state.prices;
+
     return (
-        <View style={{width: 300,height: 300,flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', }}>
-            <Chart
-                style={{width: 300,height: 300,marginBottom: 20}}
+        <View style={{height: 300,flex: 1}}>
+            <ButtonGroup
+              onPress={this.updateIndex}
+              buttons={buttons} />
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', }}>
+              <Chart style={{top: 1, left: 1, bottom: 1,right: 1,width: 400,height: 300}}
                 data={this.state.points}
                 verticalGridStep={10}
                 type="line"
@@ -342,9 +350,12 @@ if(columns[1]){
                 yAxisWidth={35}
                 fillColor={'rgba(87,190,133, 0.5)'}
                 color={'rgba(87,190,133, 1)'}
+
+                xLabels={[1,2,3,4,5]}
+                yLabels={[1,2,3,4,5]}
                 yAxisWidth={100}
-                xAxisHeight={100}
-             />
+                xAxisHeight={100} />
+             </View>
         </View>
     );
   }
@@ -470,6 +481,11 @@ class ListScreen extends React.Component {
     const menu = <Menu navigator={navigator}/>;
     return (
       <View>
+        <SearchBar
+          lightTheme
+          onChangeText='aaa'
+          placeholder='Type Here...' />
+      
         <ScrollView>
         <List>
           {
