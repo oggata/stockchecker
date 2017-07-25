@@ -12,6 +12,40 @@ import { StackNavigator } from 'react-navigation';
 //AAPL,GOOG,GOOGL,YHOO,TSLA,INTC,AMZN,BIDU,ORCL,MSFT,ORCL,ATVI,NVDA,GME,LNKD,NFLX
 import { ScrollView } from 'react-native';
 import { Button, SideMenu, Menu, List, ListItem, ButtonGroup, SearchBar, CheckBox } from 'react-native-elements';
+import Table from 'react-native-simple-table'
+
+const columns = [
+  {
+    title: '日付',
+    dataIndex: 'strdate',
+    width: 70
+  },
+  {
+    title: '終値',
+    dataIndex: 'owarine',
+    width: 50
+  },
+  {
+    title: '高値',
+    dataIndex: 'takane',
+    width: 50
+  },
+  {
+    title: '安値',
+    dataIndex: 'yasune',
+    width: 50
+  },
+  {
+    title: '始値',
+    dataIndex: 'hajimene',
+    width: 50
+  },
+  {
+    title: '出来高',
+    dataIndex: 'dekidaka',
+    width: 100
+  },
+];
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -108,8 +142,7 @@ class ChatScreen extends React.Component {
           this.prices.push(_txt);
         }
       }
-console.log(this.prices[0].name)
-
+      //console.log(this.prices[0].name)
       this.setState({
         prices : this.prices
       })
@@ -125,27 +158,17 @@ console.log(this.prices[0].name)
 
   render() {
     const menu = <Menu navigator={navigator}/>;
+    //let dataSource = DataFactory.generate().data;
+    let dataSource = this.state.prices;
+
     return (
       <View>
         <Text>Apple Inc</Text>
         <Text>Apple Inc</Text>
         <Text>Apple Inc</Text>
         <Text>Apple Inc</Text>
-        <ScrollView>
-          <List>
-            {
-              this.state.prices.map((item, i) => (
-                <ListItem
-                  key={i}
-                  title={item.strdate}
-                  subtitle={item.market}
-                  icon={{name: item.icon}}
-                  onPress={() => navigate('Chat')}
-                />
-              ))
-            }
-          </List>
-        </ScrollView>
+        <Text>react-native-simple-table</Text>
+        <Table height={400} columnWidth={60} columns={columns} dataSource={dataSource} />
       </View>
     );
   }
