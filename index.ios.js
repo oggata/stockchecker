@@ -50,8 +50,54 @@ class ChatScreen extends React.Component {
   };
   constructor(props) {
     super(props);
-    this.state = { loading: false };
+    this.state = { loading: false, prices: []};
   }
+
+  unixToDate(unixtime){
+    var ux = unixtime;
+    var d = new Date( ux * 1000 );
+    var month = d.getMonth() + 1;
+    var day   = d.getDate();
+    var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
+    return month + "/" + day;
+  }
+
+  componentWillMount(){
+     //console.log("CALL API1============================================================================================================>");
+     api.getPrices().then((res) => {
+
+      //改行でsplitしてlineに配列として入れる
+      var lines = res.split(/\r\n|\r|\n/);
+      //８行目以降は価格部になるので、配列に入れておく
+      this.prices = []; 
+      /*
+        a で始まる時刻: aを取った文字列がUNIX時刻
+        a で始まらない時刻:
+        a で始まる時刻 + INTERVAL × この列の数値
+      */
+      this.firstUnixTime = 0;
+      for(i = 7; i < lines.length; i++) {
+        var columns = lines[i].split(',');
+        if(columns[0].startsWith('a')){
+          var _unixtime = columns[0].slice(1);
+          this.firstUnixTime = _unixtime;
+          var _txt = _unixtime + "," + this.unixToDate(_unixtime) + "," + columns[1] + "," + columns[2] + "," + columns[3];
+          this.prices.push(_txt);
+        }else{
+          var _unixtime = Number(this.firstUnixTime) + (86400 * Number(columns[0]));
+          var _txt = _unixtime + "," + this.unixToDate(_unixtime) + "," + columns[1] + "," + columns[2] + "," + columns[3];
+          this.prices.push(_txt);
+        }
+      }
+      console.log(this.prices);
+
+
+      this.setState({
+        prices : this.prices
+      })
+     });
+  }
+
   toggle() {
       console.log(this.state);
       // let state = this.state.loading;
@@ -62,7 +108,27 @@ class ChatScreen extends React.Component {
     const menu = <Menu navigator={navigator}/>;
     return (
       <View>
-        <Text>Chat with Lucy</Text>
+        <Text>Apple Inc</Text>
+        <Text>Apple Inc</Text>
+        <Text>Apple Inc</Text>
+        <Text>Apple Inc</Text>
+
+        <List>
+          {
+            this.state.prices.map((item, i) => (
+              <ListItem
+                key={i}
+                title={item.name}
+                subtitle={item.market}
+                icon={{name: item.icon}}
+                onPress={() => navigate('Chat')}
+              />
+            ))
+          }
+        </List>
+
+
+
       </View>
     );
   }
@@ -106,24 +172,15 @@ const list = [
       }
 ];
 
-/*
-function getMoviesFromApiAsync() {
-  return fetch('https://facebook.github.io/react-native/movies.json')
-    .then((response) => response.json())
-    .then((responseJson) => {
-      console.log(responseJson.movies);
-      return responseJson.movies;
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
-*/
-
 var api = {
-  getMoviesFromApiAsync(){
-    var url = 'https://facebook.github.io/react-native/movies.json';
+  getCompanies(){
+    var url = 'https://oggata.github.io/stockchecker/sample/api-001.json';
     return fetch(url).then((res) => res.json());
+  },
+
+  getPrices(){
+    var url = 'https://www.google.com/finance/getprices?q=AAPL&x=NASDAQ&i=86400&p=1M&f=d,c,v,o,h,l&df=cpct&auto=1&ts=1489550582260&ei=4rrIWJHoIYya0QS1i4IQ';
+    return fetch(url).then((res) => res.text()); 
   }
 };
 
@@ -169,9 +226,9 @@ class ListScreen extends React.Component {
   }
 
   componentWillMount(){
-     api.getMoviesFromApiAsync().then((res) => {
+     api.getCompanies().then((res) => {
       this.setState({
-        movies: res.movies
+        movies: res.companies
        })
       //console.log("CALL API==================>");
       //console.log(this.state.movies);
@@ -190,23 +247,9 @@ class ListScreen extends React.Component {
       console.log("Clicked!")
       // this.setState({ loading: !state })
   }
+
   render() {
-/*
-      console.log("RENDER==================>");
-      console.log(this.state);
-      console.log("RENDER==================>");
-          <ListItem
-            roundAvatar
-            onPress={() => console.log('Pressed')}
-            avatar={l.avatar_url}
-            key={i}
-            title={l.name}
-            subtitle={l.subtitle}
-          />
-
-*/
     const { navigate } = this.props.navigation;
-
     const menu = <Menu navigator={navigator}/>;
     return (
       <View>
@@ -215,10 +258,9 @@ class ListScreen extends React.Component {
             this.state.movies.map((item, i) => (
               <ListItem
                 key={i}
-                title={item.title}
-                subtitle="xxxx"
+                title={item.name}
+                subtitle={item.market}
                 icon={{name: item.icon}}
-                //onPress={() => console.log('Pressed')}
                 onPress={() => navigate('Chat')}
               />
             ))
@@ -228,8 +270,6 @@ class ListScreen extends React.Component {
     );
   }
 }
-
-
 
 class SideMenuScreen extends React.Component {
   static navigationOptions = {
