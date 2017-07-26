@@ -22,6 +22,7 @@ import ListScreen from './js/CompanyListScreen';
 import CompanyDetailScreen from './js/CompanyDetailScreen';
 import SideMenuScreen from './js/SideMenuScreen';
 
+console.disableYellowBox = true;
 
 const SimpleApp = StackNavigator({
   Home: { screen: HomeScreen },

@@ -6,10 +6,6 @@ import {
   View
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-//import { SideMenu,Menu } from 'react-native-side-menu';
-//import { Menu } from 'react-native-side-menu';
-//const SideMenu = require('react-native-side-menu');
-//AAPL,GOOG,GOOGL,YHOO,TSLA,INTC,AMZN,BIDU,ORCL,MSFT,ORCL,ATVI,NVDA,GME,LNKD,NFLX
 import { ScrollView } from 'react-native';
 import { Button, SideMenu, Menu, List, ListItem, ButtonGroup, SearchBar, CheckBox } from 'react-native-elements';
 import Table from 'react-native-simple-table';
@@ -36,7 +32,6 @@ export default class ListScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = { loading: false, movies: [] };
-    console.log("ListsScreen-------->");
   }
 
   componentWillMount(){
@@ -44,8 +39,6 @@ export default class ListScreen extends React.Component {
       this.setState({
         movies: res.companies
        })
-      //console.log("CALL API==================>");
-      //console.log(this.state.movies);
      });
   }
 
@@ -56,10 +49,7 @@ export default class ListScreen extends React.Component {
   }
 
   toggle() {
-      console.log(this.state);
-      // let state = this.state.loading;
-      console.log("Clicked!")
-      // this.setState({ loading: !state })
+
   }
 
   render() {
@@ -81,7 +71,7 @@ export default class ListScreen extends React.Component {
                 title={item.name}
                 subtitle={item.market}
                 icon={{name: item.icon}}
-                onPress={() => navigate('Chat')}
+                onPress={() => this.props.navigation.navigate('Chart',item)}
               />
             ))
           }

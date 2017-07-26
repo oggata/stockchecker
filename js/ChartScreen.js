@@ -6,41 +6,24 @@ import {
   View
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-//import { SideMenu,Menu } from 'react-native-side-menu';
-//import { Menu } from 'react-native-side-menu';
-//const SideMenu = require('react-native-side-menu');
-//AAPL,GOOG,GOOGL,YHOO,TSLA,INTC,AMZN,BIDU,ORCL,MSFT,ORCL,ATVI,NVDA,GME,LNKD,NFLX
 import { ScrollView } from 'react-native';
 import { Button, SideMenu, Menu, List, ListItem, ButtonGroup, SearchBar, CheckBox } from 'react-native-elements';
 import Table from 'react-native-simple-table';
 import Chart from 'react-native-chart';
 import RNChart from 'react-native-chart';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
-});
+
 
 const data = [
     ['7/1', 1000]
 ];
 
 var api = {
-  getCompanies(){
-    var url = 'https://oggata.github.io/stockchecker/sample/api-001.json';
-    return fetch(url).then((res) => res.json());
-  },
-
-  getPrices(){
-    var url = 'https://www.google.com/finance/getprices?q=AAPL&x=NASDAQ&i=86400&p=1M&f=d,c,v,o,h,l&df=cpct&auto=1&ts=1489550582260&ei=4rrIWJHoIYya0QS1i4IQ';
+  getPrices(companyCode,interval,range){
+    var url = 'https://www.google.com/finance/getprices?q=' + companyCode + '&x=NASDAQ&i=' + interval + '&p=' + range + '&f=d,c,v,o,h,l&df=cpct&auto=1&ts=1489550582260&ei=4rrIWJHoIYya0QS1i4IQ';
     return fetch(url).then((res) => res.text()); 
   }
 };
-
 
 export default class ChartScreen extends React.Component {
   static navigationOptions = {
@@ -48,7 +31,10 @@ export default class ChartScreen extends React.Component {
   };
   constructor(props) {
     super(props);
-    this.state = { loading: false, prices: [], points:data};
+    console.log("----------------------->");
+    //console.log(this.props.navigation.state.params.code);
+
+    this.state = { loading: false, prices: [], points:data, company:this.props.navigation.state.params};
   }
 
   unixToDate(unixtime){
@@ -61,7 +47,17 @@ export default class ChartScreen extends React.Component {
   }
 
   componentWillMount(){
-     api.getPrices().then((res) => {
+     //var companyCode = "AAPL";
+    //if(this.state.company.cod){
+      var companyCode = this.state.company.code;
+    //}
+     console.log("----------------------->"); 
+     if(!this.state.company.code){
+      companyCode = "AAPL";
+     }
+
+     //1M:86400sec=1日 3M:86400 * 3 = 259200 : 3日 1Y:86400 * 12
+     api.getPrices(companyCode,259200,'3M').then((res) => {
 
       //改行でsplitしてlineに配列として入れる
       var lines = res.split(/\r\n|\r|\n/);
@@ -123,22 +119,8 @@ if(columns[1]){
           if(columns[1]){
             this.points.push(_pointData);
           }
-
-
-if(columns[1]){
-//if(Number(columns[1]) >= 170){
-  console.log(">>>>>>>>>>>>>>>>>>>>>");
-  console.log(columns[1]);
-//}
-}
-
-
-//console.log(">>>>>>>>>>>>>>>>>>>>>");
-//console.log(columns[1]);
-
         }
       }
-      //console.log(this.prices[0].name)
       this.setState({
         prices : this.prices,
         points : this.points
@@ -147,10 +129,6 @@ if(columns[1]){
   }
 
   toggle() {
-      console.log(this.state);
-      // let state = this.state.loading;
-      console.log("Clicked!")
-      // this.setState({ loading: !state })
   }
 
   renderLoadingView() {
@@ -163,18 +141,27 @@ if(columns[1]){
     );
   }
 
+
+
   render() {
     const menu = <Menu navigator={navigator}/>;
-    const buttons = ['Hello', 'World', 'Buttons']
+    const buttons = ['1year', '3month', '1month']
     let dataSource = this.state.prices;
 
     return (
+
         <View style={{height: 300,flex: 1}}>
+
             <ButtonGroup
-              onPress={this.updateIndex}
+              onPress={() => {
+                this.setState(
+                  {selectedTab: this.updateIndex}
+                );
+              }}
               buttons={buttons} />
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', }}>
-              <Chart style={{top: 1, left: 1, bottom: 1,right: 1,width: 400,height: 300}}
+
+            <View style={styles.chartView}>
+              <Chart style={styles.chart}
                 data={this.state.points}
                 verticalGridStep={10}
                 type="line"
@@ -204,3 +191,41 @@ if(columns[1]){
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  chartView:{
+    height: 300,
+    flex: 1, 
+    justifyContent: 'center',
+    alignItems: 'center', 
+    backgroundColor: 'white'
+  },
+  chart:{
+    width: 400,
+    height: 300,
+    top: 1,
+    left: 1, 
+    bottom: 1,
+    right: 1
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+  },
+  textInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1
+  }
+});
